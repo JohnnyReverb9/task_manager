@@ -1,18 +1,19 @@
 package settings
 
-func ViewInfo() string {
+import "fmt"
+
+func ViewInfo() {
 	info := `Welcome to the task maker!`
 
-	return info
+	fmt.Println(info)
 }
 
-func ViewHelp() string {
+func ViewHelp() {
 	help := `
 Commands:
 1) help -- view help list;
 2) sign_in -- sign in;
 3) sign_up -- sign up;
 `
-
-	return help
+	fmt.Println(help)
 }
