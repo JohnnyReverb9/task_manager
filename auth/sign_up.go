@@ -2,6 +2,7 @@ package auth
 
 import (
 	"crypto/sha256"
+	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -9,18 +10,57 @@ import (
 )
 
 func SignUp(name string, login string, password string) (*model.User, string, error) {
-	id, err := os.ReadFile("misc/id_sequence.txt")
+	sequencePath := "misc/id_sequence.txt"
+	userPath := "user/"
+	storagePath := "storage/"
+
+	_, err := os.ReadFile(userPath + login + ".txt")
+
+	if err == nil {
+		// fmt.Println("User already exists")
+		return nil, "", fmt.Errorf("user already exists")
+	}
+
+	id, err := os.ReadFile(sequencePath)
 
 	if err != nil {
-		log.Println("Error reading file sequence")
+		log.Println("error reading file sequence")
+		return nil, "", err
 	}
 
 	idInt, _ := strconv.Atoi(string(id))
 	passwordHash := sha256.Sum256([]byte(password))
+	passwordStr := string(passwordHash[:])
 
-	u := model.User{ID: idInt, Name: name, Login: login, Password: passwordHash}
+	u := model.User{ID: idInt, Name: name, Login: login, Password: passwordStr}
 
-	return &u, "User created successfully", nil
+	idInt += 1
+	idStr := strconv.Itoa(idInt)
+	err = os.WriteFile(sequencePath, []byte(idStr), 0644)
+
+	if err != nil {
+		log.Println("error writing file sequence")
+		return nil, "", err
+	}
+
+	err = os.WriteFile(userPath+u.Login+".txt", []byte(u.GetInfoUser()), 0644)
+
+	if err != nil {
+		log.Println("error writing file user")
+		return nil, "", err
+	}
+
+	// err = os.WriteFile(storagePath+"/"+u.Login+".txt", []byte(u.GetInfoUser()), 0644)
+	err = os.Mkdir(storagePath+u.Login, 0755)
+
+	if err != nil {
+		log.Println("error creating storage directory")
+		return nil, "", err
+	}
+
+	u.SetUserStorage(storagePath + u.Login)
+
+	return &u, "user created successfully", nil
 }
 
 func validatePassword(password string) error {
