@@ -43,7 +43,7 @@ func SignUp(name string, login string, password string) (*model.User, string, er
 		return nil, "", err
 	}
 
-	err = os.WriteFile(userPath+u.Login+".txt", []byte(u.GetInfoUser()), 0644)
+	err = os.WriteFile(userPath+u.Login+".txt", []byte(u.GetInfoUser()), 0666)
 
 	if err != nil {
 		log.Println("error writing file user")
