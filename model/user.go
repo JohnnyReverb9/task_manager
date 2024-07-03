@@ -1,7 +1,6 @@
 package model
 
 import (
-	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -50,14 +49,7 @@ func (u *User) GetInfoUser() string {
 	return ret
 }
 
-func constructUser(login string) (*User, error) {
-	userInfo, err := os.ReadFile("user/" + login + ".txt")
-
-	if err != nil {
-		log.Println("User not found:", err)
-		return nil, err
-	}
-
+func constructUser(login string, userInfo []byte) *User {
 	userInfoStr := string(userInfo)
 	userInfoObject := strings.Split(userInfoStr, ";")
 
@@ -68,5 +60,22 @@ func constructUser(login string) (*User, error) {
 
 	u := User{ID: id, Name: name, Login: login, Password: password, UserStorage: userStorage}
 
-	return &u, nil
+	return &u
+}
+
+func ValidateUser(login, password string) (*User, bool) {
+	userInfo, err := os.ReadFile("user/" + login + ".txt")
+
+	if err != nil {
+		// log.Println("User not found:", err)
+		return nil, false
+	}
+
+	u := constructUser(login, userInfo)
+
+	if u.Password == password {
+		return u, true
+	} else {
+		return nil, false
+	}
 }
