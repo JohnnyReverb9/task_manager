@@ -12,8 +12,9 @@ func ViewHelp() {
 	help := `
 Commands:
 1) help -- view help list;
-2) sign_in -- sign in;
-3) sign_up -- sign up;
+2) exit -- exit the program
+3) sign_in -- sign in;
+4) sign_up -- sign up;
 `
 	fmt.Println(help)
 }
