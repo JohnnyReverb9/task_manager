@@ -77,7 +77,7 @@ func main() {
 			if u != nil {
 				fmt.Println("You are already signed in")
 			} else {
-				fmt.Println("\nSign in")
+				fmt.Println("\nSign in:")
 
 				var login, password string
 
@@ -99,6 +99,8 @@ func main() {
 				passwordStr := hex.EncodeToString(passwordHash[:])
 
 				u, err = auth.SignIn(login, passwordStr)
+
+				settings.ClearConsole()
 
 				if err != nil {
 					log.Println(err)
@@ -135,6 +137,8 @@ func main() {
 				var s string
 
 				u, s, err = auth.SignUp(name, login, password)
+
+				settings.ClearConsole()
 
 				log.Println(s + "\n")
 
