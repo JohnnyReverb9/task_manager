@@ -45,7 +45,12 @@ func (u *User) ViewTasks() {
 		log.Println(err)
 	}
 
-	fmt.Println(u.Name + "'s files:")
+	if len(filesFromDir) == 0 {
+		fmt.Println("User " + u.Name + " has no tasks in storage")
+		return
+	}
+
+	fmt.Println(u.Name + "'s tasks:")
 
 	for _, f := range filesFromDir {
 		fmt.Println(strconv.Itoa(index) + ") " + revertTaskNameReplacer(f.Name()) + ";")

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
@@ -85,17 +86,18 @@ func main() {
 				break
 			}
 			fmt.Println("\nSign in:")
+			reader := bufio.NewReader(os.Stdin)
 
 			var login, password string
 
 			fmt.Print("Enter login: ")
-			_, err := fmt.Scan(&login)
+			login, err = reader.ReadString('\n')
 			if err != nil {
 				log.Println(err)
 			}
 
 			fmt.Print("Enter password: ")
-			_, err = fmt.Scan(&password)
+			password, err = reader.ReadString('\n')
 			if err != nil {
 				log.Println(err)
 			}
@@ -123,23 +125,25 @@ func main() {
 			fmt.Println("\nSign up:")
 
 			var name, login, password string
+			reader := bufio.NewReader(os.Stdin)
 
 			fmt.Print("Enter name: ")
-			_, err := fmt.Scan(&name)
+			name, err = reader.ReadString('\n')
+
 			name = strings.TrimSpace(name)
 			if err != nil {
 				log.Println("Enter a valid name")
 			}
 
 			fmt.Print("Enter login: ")
-			_, err = fmt.Scan(&login)
+			login, err = reader.ReadString('\n')
 			login = strings.TrimSpace(login)
 			if err != nil {
 				log.Println("Enter a valid login")
 			}
 
 			fmt.Print("Enter password: ")
-			_, _ = fmt.Scan(&password)
+			password, err = reader.ReadString('\n')
 			password = strings.TrimSpace(password)
 
 			var s string
@@ -172,19 +176,20 @@ func main() {
 			}
 
 			var taskName, content string
+			reader := bufio.NewReader(os.Stdin)
 
 			fmt.Println("\nCreate task:")
 
 			fmt.Print("Enter task name: ")
-			_, err := fmt.Scan(&taskName)
+			taskName, err = reader.ReadString('\n')
 			taskName = strings.TrimSpace(taskName)
 			if err != nil {
 				log.Println("Enter a valid task name")
 			}
 
-			fmt.Print("Enter content: ")
-			_, err = fmt.Scan(&content)
-			content = strings.TrimSpace(content)
+			fmt.Print("Enter description: ")
+			content, err = reader.ReadString('\n')
+			// content = strings.TrimSpace(content)
 			if err != nil {
 				log.Println("Enter a valid task content")
 			}
