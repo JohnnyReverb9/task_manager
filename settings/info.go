@@ -3,7 +3,7 @@ package settings
 import "fmt"
 
 func ViewInfo() {
-	info := `Welcome to the task maker!`
+	info := "\nWelcome to the task maker!"
 
 	fmt.Println(info)
 }

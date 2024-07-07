@@ -2,6 +2,7 @@ package auth
 
 import (
 	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"log"
 	"os"
@@ -30,7 +31,8 @@ func SignUp(name string, login string, password string) (*model.User, string, er
 
 	idInt, _ := strconv.Atoi(string(id))
 	passwordHash := sha256.Sum256([]byte(password))
-	passwordStr := string(passwordHash[:])
+	passwordStr := hex.EncodeToString(passwordHash[:])
+	// log.Fatal(passwordHash, passwordStr)
 
 	u := model.User{ID: idInt, Name: name, Login: login, Password: passwordStr}
 
