@@ -2,6 +2,7 @@ package settings
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"runtime"
@@ -20,6 +21,7 @@ Commands:
 2) exit -- exit the program;
 3) sign_in -- sign in;
 4) sign_up -- sign up;
+5) clear -- clear the console;
 `
 	fmt.Println(help)
 }
@@ -32,9 +34,10 @@ Commands:
 3) log_out -- log out;
 4) view_tasks -- view all tasks;
 5) create_task -- create a new task;
-6) rename_task -- rename a task;
+6) edit_task -- edit a task;
 7) delete_task -- delete a task;
 8) profile -- view profile list;
+9) clear -- clear the console;
 `
 	fmt.Println(help)
 }
@@ -55,5 +58,9 @@ func ClearConsole() {
 		cmd = exec.Command("clear")
 	}
 	cmd.Stdout = os.Stdout
-	cmd.Run()
+	err := cmd.Run()
+
+	if err != nil {
+		log.Println(err)
+	}
 }

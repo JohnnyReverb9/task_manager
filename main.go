@@ -18,9 +18,11 @@ var u *model.User = nil
 func main() {
 	var action string
 
+	// START INFO
 	settings.ViewInfo()
 	fmt.Println("Use help command to get more information")
 
+	// DIR CHECKS
 	if !settings.DirExists("./user") {
 		err := os.Mkdir("user/", 0777)
 		if err != nil {
@@ -58,6 +60,7 @@ func main() {
 		}
 	}
 
+	// COMMAND CYCLE
 	for {
 		fmt.Print("Enter command: ")
 		_, err := fmt.Scan(&action)
@@ -67,85 +70,90 @@ func main() {
 		}
 
 		switch action {
+		// VIEW HELP
 		case "help":
 			if u == nil {
 				settings.ViewHelp()
 			} else {
 				settings.ViewHelpAuth()
 			}
+		// AUTH BLOCK
+		// SIGN IN BLOCK
 		case "sign_in":
 			if u != nil {
 				fmt.Println("You are already signed in")
-			} else {
-				fmt.Println("\nSign in:")
-
-				var login, password string
-
-				fmt.Print("Enter login: ")
-				_, err := fmt.Scan(&login)
-				if err != nil {
-					log.Println(err)
-				}
-
-				fmt.Print("Enter password: ")
-				_, err = fmt.Scan(&password)
-				if err != nil {
-					log.Println(err)
-				}
-
-				login = strings.TrimSpace(login)
-				password = strings.TrimSpace(password)
-				passwordHash := sha256.Sum256([]byte(password))
-				passwordStr := hex.EncodeToString(passwordHash[:])
-
-				u, err = auth.SignIn(login, passwordStr)
-
-				settings.ClearConsole()
-
-				if err != nil {
-					log.Println(err)
-				} else {
-					log.Println("\nWelcome, " + u.Name + "!\n")
-				}
+				break
 			}
+			fmt.Println("\nSign in:")
+
+			var login, password string
+
+			fmt.Print("Enter login: ")
+			_, err := fmt.Scan(&login)
+			if err != nil {
+				log.Println(err)
+			}
+
+			fmt.Print("Enter password: ")
+			_, err = fmt.Scan(&password)
+			if err != nil {
+				log.Println(err)
+			}
+
+			login = strings.TrimSpace(login)
+			password = strings.TrimSpace(password)
+			passwordHash := sha256.Sum256([]byte(password))
+			passwordStr := hex.EncodeToString(passwordHash[:])
+
+			u, err = auth.SignIn(login, passwordStr)
+
+			settings.ClearConsole()
+
+			if err != nil {
+				log.Println(err)
+			} else {
+				log.Println("\nWelcome, " + u.Name + "!\n")
+			}
+		// SIGN UP BLOCK
 		case "sign_up":
 			if u != nil {
 				fmt.Println("You are already signed up")
-			} else {
-				fmt.Println("\nSign up:")
-
-				var name, login, password string
-
-				fmt.Print("Enter name: ")
-				_, err := fmt.Scan(&name)
-				name = strings.TrimSpace(name)
-				if err != nil {
-					log.Println("Enter a valid name")
-				}
-
-				fmt.Print("Enter login: ")
-				_, err = fmt.Scan(&login)
-				login = strings.TrimSpace(login)
-				if err != nil {
-					log.Println("Enter a valid login")
-				}
-
-				fmt.Print("Enter password: ")
-				_, _ = fmt.Scan(&password)
-				password = strings.TrimSpace(password)
-
-				var s string
-
-				u, s, err = auth.SignUp(name, login, password)
-
-				settings.ClearConsole()
-
-				log.Println(s + "\n")
-
-				if err != nil {
-					log.Println(err)
-				}
+				break
 			}
+			fmt.Println("\nSign up:")
+
+			var name, login, password string
+
+			fmt.Print("Enter name: ")
+			_, err := fmt.Scan(&name)
+			name = strings.TrimSpace(name)
+			if err != nil {
+				log.Println("Enter a valid name")
+			}
+
+			fmt.Print("Enter login: ")
+			_, err = fmt.Scan(&login)
+			login = strings.TrimSpace(login)
+			if err != nil {
+				log.Println("Enter a valid login")
+			}
+
+			fmt.Print("Enter password: ")
+			_, _ = fmt.Scan(&password)
+			password = strings.TrimSpace(password)
+
+			var s string
+
+			u, s, err = auth.SignUp(name, login, password)
+
+			settings.ClearConsole()
+
+			log.Println(s + "\n")
+
+			if err != nil {
+				log.Println(err)
+			}
+		// LOG OUT
 		case "log_out":
 			if u == nil {
 				log.Println("You are not logged in!")
@@ -153,6 +161,58 @@ func main() {
 				u = nil
 				log.Println("Logged out successfully")
 			}
+		// END AUTH BLOCK
+
+		// TASK MANAGEMENT BLOCK
+		// CREATE TASK
+		case "create_task":
+			if u == nil {
+				log.Println("You are not logged in!")
+				break
+			}
+
+			var taskName, content string
+
+			fmt.Println("\nCreate task:")
+
+			fmt.Print("Enter task name: ")
+			_, err := fmt.Scan(&taskName)
+			taskName = strings.TrimSpace(taskName)
+			if err != nil {
+				log.Println("Enter a valid task name")
+			}
+
+			fmt.Print("Enter content: ")
+			_, err = fmt.Scan(&content)
+			content = strings.TrimSpace(content)
+			if err != nil {
+				log.Println("Enter a valid task content")
+			}
+
+			u.CreateTask(taskName, content)
+
+			log.Println("Task \"" + taskName + "\" created successfully")
+		// EDIT TASK
+		case "edit_task":
+			if u == nil {
+				log.Println("You are not logged in!")
+				break
+			}
+		// DELETE TASK
+		case "delete_task":
+			if u == nil {
+				log.Println("You are not logged in!")
+				break
+			}
+		// VIEW ALL TASKS
+		case "view_tasks":
+			if u == nil {
+				log.Println("You are not logged in!")
+				break
+			}
+			u.ViewTasks()
+		// END TASK MANAGEMENT BLOCK
+		// MISC
 		case "profile":
 			if u == nil {
 				log.Println("You are not logged in!")
@@ -160,6 +220,8 @@ func main() {
 				str := "Profile:\nID: " + strconv.Itoa(u.ID) + "\nName: " + u.Name + "\nLogin: " + u.Login + "\n"
 				fmt.Println(str)
 			}
+		case "clear":
+			settings.ClearConsole()
 		case "exit":
 			fmt.Println("Exiting...")
 			return

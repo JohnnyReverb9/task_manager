@@ -1,6 +1,8 @@
 package model
 
 import (
+	"fmt"
+	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -17,18 +19,37 @@ type User struct {
 
 type UserService interface {
 	GetInfoUser() string
-	CreateTask()
-	RenameTask()
+	CreateTask(taskName, content string)
+	ViewTasks()
+	OpenTask(taskName string)
 	EditTask()
 	DeleteTask()
 }
 
-func (u *User) CreateTask() {
+func (u *User) CreateTask(taskName, content string) {
+	userDir := "storage/" + u.Login + "/"
+	taskName = taskNameReplacer(taskName)
+	err := os.WriteFile(userDir+taskName+".txt", []byte(content), 0666)
 
+	if err != nil {
+		log.Println("error while creating task:", err)
+	}
 }
 
-func (u *User) RenameTask() {
+func (u *User) ViewTasks() {
+	userDir := "storage/" + u.Login + "/"
+	index := 1
+	filesFromDir, err := os.ReadDir(userDir)
 
+	if err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println(u.Name + "'s files:")
+
+	for _, f := range filesFromDir {
+		fmt.Println(strconv.Itoa(index) + ") " + revertTaskNameReplacer(f.Name()) + ";")
+	}
 }
 
 func (u *User) EditTask() {
@@ -36,6 +57,10 @@ func (u *User) EditTask() {
 }
 
 func (u *User) DeleteTask() {
+
+}
+
+func (u *User) OpenTask(taskName string) {
 
 }
 
@@ -78,4 +103,12 @@ func ValidateUser(login, password string) (*User, bool) {
 	} else {
 		return nil, false
 	}
+}
+
+func taskNameReplacer(taskName string) string {
+	return strings.ReplaceAll(taskName, " ", "_")
+}
+
+func revertTaskNameReplacer(taskName string) string {
+	return strings.ReplaceAll(taskName, "_", " ")
 }
