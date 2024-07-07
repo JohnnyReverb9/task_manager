@@ -12,6 +12,7 @@ import (
 
 func SignUp(name string, login string, password string) (*model.User, string, error) {
 	sequencePath := "misc/id_sequence.txt"
+	allUsersPath := "misc/users.txt"
 	userPath := "user/"
 	storagePath := "storage/"
 
@@ -61,6 +62,12 @@ func SignUp(name string, login string, password string) (*model.User, string, er
 	}
 
 	u.SetUserStorage(storagePath + u.Login)
+
+	err = os.WriteFile(allUsersPath, []byte(login), 0644)
+
+	if err != nil {
+		log.Println("error adding user to all users list")
+	}
 
 	return &u, "user created successfully", nil
 }

@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"log"
+	"os"
 	"strconv"
 	"strings"
 	"task_maker/auth"
@@ -19,6 +20,43 @@ func main() {
 
 	settings.ViewInfo()
 	fmt.Println("Use help command to get more information")
+
+	if !settings.DirExists("./user") {
+		err := os.Mkdir("user/", 0777)
+		if err != nil {
+			fmt.Println("Error creating user/ directory. Create \"user\" folder.")
+			log.Fatal(err)
+		}
+	}
+
+	if !settings.DirExists("./storage") {
+		err := os.Mkdir("storage/", 0777)
+		if err != nil {
+			fmt.Println("Error creating storage/ directory. Create \"storage\" folder.")
+			log.Fatal(err)
+		}
+	}
+
+	if !settings.DirExists("./misc") {
+		err := os.Mkdir("misc/", 0777)
+		if err != nil {
+			log.Fatal("Error creating misc/ directory.")
+		}
+
+		idSequencePath := "misc/id_sequence.txt"
+		err = os.WriteFile(idSequencePath, []byte("1"), 0666)
+
+		if err != nil {
+			log.Fatal("Error creating sequence.")
+		}
+
+		allUsersPath := "misc/users.txt"
+		err = os.WriteFile(allUsersPath, []byte(""), 0666)
+
+		if err != nil {
+			log.Fatal("Error creating users list file.")
+		}
+	}
 
 	for {
 		fmt.Print("Enter command: ")

@@ -1,6 +1,9 @@
 package settings
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
 func ViewInfo() {
 	info := "\nWelcome to the task maker!"
@@ -32,4 +35,12 @@ Commands:
 8) profile -- view profile list;
 `
 	fmt.Println(help)
+}
+
+func DirExists(path string) bool {
+	info, err := os.Stat(path)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return info.IsDir()
 }
