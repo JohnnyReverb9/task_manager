@@ -203,12 +203,18 @@ func main() {
 				log.Println("You are not logged in!")
 				break
 			}
+
+			// TODO: make task edit
+
 		// DELETE TASK
 		case "delete_task":
 			if u == nil {
 				log.Println("You are not logged in!")
 				break
 			}
+
+			// TODO: make task delete
+
 		// VIEW ALL TASKS
 		case "view_tasks":
 			if u == nil {
